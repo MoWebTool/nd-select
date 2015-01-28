@@ -10,7 +10,9 @@ var $ = require('jquery');
 var Overlay = require('nd-overlay');
 var Template = require('nd-template');
 
+
 var template = require('./src/select.handlebars');
+var partial = require('./src/options.handlebars');
 
 
 // Helper
@@ -157,6 +159,7 @@ var Select = Overlay.extend({
     },
     classPrefix: 'ui-select',
     template: template,
+    partial: partial,
     // 定位配置
     align: {
       baseXY: [0, '100%-1px']
@@ -207,7 +210,6 @@ var Select = Overlay.extend({
       return data + '';
     }
   },
-
   // 覆盖父类
   // --------
 
@@ -322,7 +324,10 @@ var Select = Overlay.extend({
 
   syncModel: function(model) {
     this.set('model', completeModel(model, this.get('classPrefix')));
-    this.renderPartial('[data-role=content]');
+    this.$('[data-role="content"]').html(partial(this.get('model'), {
+      helpers: this.templateHelpers
+    }));
+    //this.renderPartial('[data-role=content]');
 
     // 同步原来的 select
     syncSelect(this.get('selectSource'), model);
@@ -453,7 +458,11 @@ var Select = Overlay.extend({
     var selected = this.options.eq(this.get('selectedIndex'));
     this.trigger('disabledChange', selected, val);
   },
-
+  _onRenderData: function (data) {
+    if (data.length) {
+      this.syncModel(data);
+    }
+  },
   // 私有方法
   // ------------
 
@@ -528,6 +537,8 @@ var Select = Overlay.extend({
       }
     });
   }
+
+
 
 });
 

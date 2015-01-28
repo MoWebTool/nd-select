@@ -9,14 +9,18 @@
 <body>
   <div id="container">
     <!-- CONTENT HERE -->
+    <select name="author" id="notice-send-author" required="required" data-widget-cid="widget-4"><option value="三年二班 班主任" selected="">三年二班 班主任</option><option value="三年二班">三年二班</option>
+    </select>
   </div>
 
   <script src="seajs/sea.js"></script>
   <script src="config.js"></script>
   <script>
   seajs.use('index', function(Select) {
-    'use strict';
-    console.log(Select);
+    new Select({
+      trigger:"#notice-send-author",
+      triggerTpl:"<a></a>"
+    }).render();
   });
   </script>
 </body>
