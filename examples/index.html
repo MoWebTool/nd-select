@@ -17,10 +17,11 @@
   <script src="config.js"></script>
   <script>
   seajs.use('index', function(Select) {
-    new Select({
+  var s=  new Select({
       trigger:"#notice-send-author",
       triggerTpl:"<a></a>"
     }).render();
+    s.set('data',[{text:'cesh',value:'cesh'},{text:'hjk',value:'1212'}]);
   });
   </script>
 </body>

@@ -10,7 +10,6 @@ var $ = require('jquery');
 var Overlay = require('nd-overlay');
 var Template = require('nd-template');
 
-
 var template = require('./src/select.handlebars');
 var partial = require('./src/options.handlebars');
 
@@ -91,7 +90,6 @@ function completeModel(model, classPrefix) {
   } else { //当所有都没有设置 selected 则默认设置第一个
     newModel[0].selected = true;
   }
-
   return {select: newModel, classPrefix: classPrefix};
 }
 
@@ -118,18 +116,18 @@ function syncSelect(select, model) {
     $(select).find('option').remove();
 
     for (var i in model) {
-      var m  = model[i];
+      var m = model[i];
       var option = document.createElement('option');
 
       option.text = m.text;
-      option.value = m .value;
+      option.value = m.value;
       select.add(option);
     }
   }
 }
 
 // 获取 className ，如果 classPrefix 不设置，就返回 ''
-function getClassName(classPrefix, className){
+function getClassName(classPrefix, className) {
   if (!classPrefix) {
     return '';
   }
@@ -138,9 +136,9 @@ function getClassName(classPrefix, className){
 }
 
 // 获取 ul 中所有 li 的高度
-function getLiHeight (ul) {
+function getLiHeight(ul) {
   var height = 0;
-  ul.find('li').each(function(index, item) {
+  ul.find('li').each(function (index, item) {
     height += $(item).outerHeight();
   });
   return height;
@@ -153,13 +151,14 @@ var Select = Overlay.extend({
   attrs: {
     trigger: {
       value: null, // required
-      getter: function(val) {
+      getter: function (val) {
         return $(val).eq(0);
       }
     },
     classPrefix: 'ui-select',
     template: template,
     partial: partial,
+    data: [],
     // 定位配置
     align: {
       baseXY: [0, '100%-1px']
@@ -182,38 +181,39 @@ var Select = Overlay.extend({
   },
 
   events: {
-    'click': function(e){
+    'click': function (e) {
       e.stopPropagation();
     },
-    'click [data-role=item]': function(e) {
+    'click [data-role=item]': function (e) {
       var target = $(e.currentTarget);
-      if(!target.data('disabled')){
+      if (!target.data('disabled')) {
         this.select(target);
       }
     },
-    'mouseenter [data-role=item]': function(e) {
+    'mouseenter [data-role=item]': function (e) {
       var target = $(e.currentTarget);
-      if(!target.data('disabled')){
+      if (!target.data('disabled')) {
         target.addClass(getClassName(this.get('classPrefix'), 'hover'));
       }
     },
-    'mouseleave [data-role=item]': function(e) {
+    'mouseleave [data-role=item]': function (e) {
       var target = $(e.currentTarget);
-      if(!target.data('disabled')){
+      if (!target.data('disabled')) {
         target.removeClass(getClassName(this.get('classPrefix'), 'hover'));
       }
     }
   },
 
   templateHelpers: {
-    output: function(data) {
+    output: function (data) {
       return data + '';
     }
   },
+
   // 覆盖父类
   // --------
 
-  initAttrs: function(config, dataAttrsConfig) {
+  initAttrs: function (config, dataAttrsConfig) {
     Select.superclass.initAttrs.call(this, config, dataAttrsConfig);
 
     var selectName, trigger = this.get('trigger');
@@ -255,10 +255,10 @@ var Select = Overlay.extend({
             '" name="' + selectName +
             '" />'
           ).css({
-            position: 'absolute',
-            left: '-99999px',
-            zIndex: -100
-          }).insertAfter(trigger);
+              position: 'absolute',
+              left: '-99999px',
+              zIndex: -100
+            }).insertAfter(trigger);
         }
         this.set('selectSource', input);
       }
@@ -268,7 +268,7 @@ var Select = Overlay.extend({
     }
   },
 
-  setup: function() {
+  setup: function () {
     this._bindEvents();
     this._initOptions();
     this._initHeight();
@@ -278,13 +278,13 @@ var Select = Overlay.extend({
     Select.superclass.setup.call(this);
   },
 
-  render: function() {
+  render: function () {
     Select.superclass.render.call(this);
     this._setTriggerWidth();
     return this;
   },
 
-  destroy: function() {
+  destroy: function () {
     if (this._initFromSelect) {
       this.get('trigger').remove();
     }
@@ -296,7 +296,7 @@ var Select = Overlay.extend({
   // 方法接口
   // --------
 
-  select: function(option) {
+  select: function (option) {
     var selectIndex = getOptionIndex(option, this.options);
     var oldSelectIndex = this.get('selectedIndex');
     this.set('selectedIndex', selectIndex);
@@ -314,7 +314,7 @@ var Select = Overlay.extend({
     // 如果不是原来选中的则触发 change 事件
     if (oldSelectIndex !== selectIndex) {
       var current = this.options.eq(selectIndex);
-      var previous  = this.options.eq(oldSelectIndex);
+      var previous = this.options.eq(oldSelectIndex);
       this.trigger('change', current, previous);
     }
 
@@ -322,16 +322,13 @@ var Select = Overlay.extend({
     return this;
   },
 
-  syncModel: function(model) {
+  syncModel: function (model) {
     this.set('model', completeModel(model, this.get('classPrefix')));
     this.$('[data-role="content"]').html(partial(this.get('model'), {
       helpers: this.templateHelpers
     }));
-    //this.renderPartial('[data-role=content]');
-
     // 同步原来的 select
     syncSelect(this.get('selectSource'), model);
-
     // 渲染后重置 select 的属性
     this.options = this.$('[data-role=content]').children();
     this.set('length', this.options.length);
@@ -346,13 +343,13 @@ var Select = Overlay.extend({
     return this;
   },
 
-  getOption: function(option) {
+  getOption: function (option) {
     var index = getOptionIndex(option, this.options);
 
     return this.options.eq(index);
   },
 
-  addOption: function(option) {
+  addOption: function (option) {
     var model = this.get('model').select;
 
     model.push(option);
@@ -361,7 +358,7 @@ var Select = Overlay.extend({
     return this;
   },
 
-  removeOption: function(option) {
+  removeOption: function (option) {
     var removedIndex = getOptionIndex(option, this.options),
       oldIndex = this.get('selectedIndex'),
       removedOption = this.options.eq(removedIndex);
@@ -375,14 +372,14 @@ var Select = Overlay.extend({
     if (removedIndex === oldIndex) {
       this.set('selectedIndex', 0);
 
-    // 如果被删除的在选中的前面，则选中的索引向前移动一格
+      // 如果被删除的在选中的前面，则选中的索引向前移动一格
     } else if (removedIndex < oldIndex) {
       this.set('selectedIndex', oldIndex - 1);
     }
     return this;
   },
 
-  enableOption: function(option) {
+  enableOption: function (option) {
     var index = getOptionIndex(option, this.options);
     var model = this.get('model').select;
     model[index].disabled = false;
@@ -390,7 +387,7 @@ var Select = Overlay.extend({
     return this;
   },
 
-  disableOption: function(option) {
+  disableOption: function (option) {
     var index = getOptionIndex(option, this.options);
     var model = this.get('model').select;
     model[index].disabled = true;
@@ -401,7 +398,7 @@ var Select = Overlay.extend({
   // set 后的回调
   // ------------
 
-  _onRenderSelectedIndex: function(index) {
+  _onRenderSelectedIndex: function (index) {
     if (index === -1) {
       return;
     }
@@ -422,7 +419,7 @@ var Select = Overlay.extend({
       if (source[0].tagName.toLowerCase() === 'select') {
         source[0].selectedIndex = index;
       } else {
-         source[0].value = value;
+        source[0].value = value;
       }
     }
 
@@ -449,7 +446,7 @@ var Select = Overlay.extend({
     this.currentItem = selected;
   },
 
-  _onRenderDisabled: function(val) {
+  _onRenderDisabled: function (val) {
     var className = getClassName(this.get('classPrefix'), 'disabled');
     var trigger = this.get('trigger');
     trigger[(val ? 'addClass' : 'removeClass')](className);
@@ -466,22 +463,22 @@ var Select = Overlay.extend({
   // 私有方法
   // ------------
 
-  _bindEvents: function() {
+  _bindEvents: function () {
     var trigger = this.get('trigger');
 
     this.delegateEvents(trigger, 'mousedown', this._triggerHandle);
-    this.delegateEvents(trigger, 'click', function(e) {
+    this.delegateEvents(trigger, 'click', function (e) {
       e.preventDefault();
     });
-    this.delegateEvents(trigger, 'mouseenter', function() {
+    this.delegateEvents(trigger, 'mouseenter', function () {
       trigger.addClass(getClassName(this.get('classPrefix'), 'trigger-hover'));
     });
-    this.delegateEvents(trigger, 'mouseleave', function() {
+    this.delegateEvents(trigger, 'mouseleave', function () {
       trigger.removeClass(getClassName(this.get('classPrefix'), 'trigger-hover'));
     });
   },
 
-  _initOptions: function() {
+  _initOptions: function () {
     this.options = this.$('[data-role=content]').children();
     // 初始化 select 的参数
     // 必须在插入文档流后操作
@@ -490,7 +487,7 @@ var Select = Overlay.extend({
   },
 
   // trigger 的宽度和浮层保持一致
-  _setTriggerWidth: function() {
+  _setTriggerWidth: function () {
     var trigger = this.get('trigger');
     var width = this.element.outerWidth();
     var pl = parseInt(trigger.css('padding-left'), 10);
@@ -505,7 +502,7 @@ var Select = Overlay.extend({
 
   // borrow from dropdown
   // 调整 align 属性的默认值, 在 trigger 下方
-  _tweakAlignDefaultValue: function() {
+  _tweakAlignDefaultValue: function () {
     var align = this.get('align');
 
     // 默认基准定位元素为 trigger
@@ -516,7 +513,7 @@ var Select = Overlay.extend({
     this.set('align', align);
   },
 
-  _triggerHandle: function(e) {
+  _triggerHandle: function (e) {
     e.preventDefault();
 
     if (!this.get('disabled')) {
@@ -524,8 +521,8 @@ var Select = Overlay.extend({
     }
   },
 
-  _initHeight: function() {
-    this.after('show', function() {
+  _initHeight: function () {
+    this.after('show', function () {
       var maxHeight = this.get('maxHeight');
 
       if (maxHeight) {
@@ -537,8 +534,6 @@ var Select = Overlay.extend({
       }
     });
   }
-
-
 
 });
 
