@@ -421,6 +421,8 @@ var Select = Overlay.extend({
       } else {
         source[0].value = value;
       }
+      // 触发 change
+      source.trigger('change');
     }
 
     // 处理之前选中的元素
