@@ -539,4 +539,39 @@ var Select = Overlay.extend({
 
 });
 
+Select.pluginEntry = {
+  name: 'Select',
+  starter: function() {
+    var plugin = this,
+      host = plugin.host;
+
+    var _widgets = plugin.exports = {};
+
+    function addWidget(name, instance) {
+      _widgets[name] = instance;
+
+      plugin.trigger('export', instance);
+    }
+
+    plugin.execute = function() {
+      host.$('select:not([data-rendered])').each(function(i, field) {
+        field.setAttribute('data-rendered', 'true');
+        addWidget(field.name, new Select({
+          trigger: field
+        }).render());
+      });
+    };
+
+    host.after('render', plugin.execute);
+    // host.after('addField', plugin.execute);
+
+    plugin.getWidget = function(name) {
+      return _widgets[name];
+    };
+
+    // 通知就绪
+    this.ready();
+  }
+};
+
 module.exports = Select;
