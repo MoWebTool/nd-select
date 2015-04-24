@@ -491,15 +491,21 @@ var Select = Overlay.extend({
   // trigger 的宽度和浮层保持一致
   _setTriggerWidth: function () {
     var trigger = this.get('trigger');
-    var width = this.element.outerWidth();
-    var pl = parseInt(trigger.css('padding-left'), 10);
-    var pr = parseInt(trigger.css('padding-right'), 10);
-    // maybe 'thin|medium|thick' in IE
-    // just give a 0
-    var bl = parseInt(trigger.css('border-left-width'), 10) || 0;
-    var br = parseInt(trigger.css('border-right-width'), 10) || 0;
 
-    trigger.css('width', width - pl - pr - bl - br);
+    // 因为默认采用 box-sizing: border-box
+    // 所以如下四个变量不需要了
+    // var pl = parseInt(trigger.css('padding-left'), 10);
+    // var pr = parseInt(trigger.css('padding-right'), 10);
+    // // maybe 'thin|medium|thick' in IE
+    // // just give a 0
+    // var bl = parseInt(trigger.css('border-left-width'), 10) || 0;
+    // var br = parseInt(trigger.css('border-right-width'), 10) || 0;
+
+    trigger.css('width', this.element.outerWidth());
+
+    // 因为 trigger 的宽度可能受 CSS（如 max-width） 限制，
+    // 最后将 element 的宽度设置为与 trigger 等宽
+    this.element.css('width', trigger.outerWidth());
   },
 
   // borrow from dropdown
