@@ -167,6 +167,9 @@ var Select = Overlay.extend({
     // trigger 的 tpl
     triggerTpl: '<a href="#"></a>',
 
+    // 滚动条宽度
+    scrollbarWidth: 3,
+
     // 原生 select 的属性
     name: '',
     value: '',
@@ -492,16 +495,8 @@ var Select = Overlay.extend({
   _setTriggerWidth: function () {
     var trigger = this.get('trigger');
 
-    // 因为默认采用 box-sizing: border-box
-    // 所以如下四个变量不需要了
-    // var pl = parseInt(trigger.css('padding-left'), 10);
-    // var pr = parseInt(trigger.css('padding-right'), 10);
-    // // maybe 'thin|medium|thick' in IE
-    // // just give a 0
-    // var bl = parseInt(trigger.css('border-left-width'), 10) || 0;
-    // var br = parseInt(trigger.css('border-right-width'), 10) || 0;
-
-    trigger.css('width', this.element.outerWidth());
+    // add scrollbar width: 3
+    trigger.css('width', this.element.outerWidth() + this.get('scrollbarWidth'));
 
     // 因为 trigger 的宽度可能受 CSS（如 max-width） 限制，
     // 最后将 element 的宽度设置为与 trigger 等宽
@@ -569,7 +564,9 @@ Select.pluginEntry = {
     };
 
     host.after('render', plugin.execute);
-    // host.after('addField', plugin.execute);
+
+    typeof host.addField === 'function' &&
+    host.after('addField', plugin.execute);
 
     host.before('destroy', function() {
       Object.keys(_widgets).forEach(function(key) {
