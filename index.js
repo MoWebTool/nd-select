@@ -149,6 +149,7 @@ var Select = Overlay.extend({
   Implements: Template,
 
   attrs: {
+    zIndex: 999,
     trigger: {
       value: null, // required
       getter: function (val) {
