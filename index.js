@@ -563,7 +563,8 @@ Select.pluginEntry = {
       host.$('select:not([data-rendered])').each(function(i, field) {
         field.setAttribute('data-rendered', 'true');
         addWidget(field.name, new Select({
-          trigger: field
+          trigger: field,
+          scrollTrigger:field.getAttribute('scrollTrigger')||null
         }).render());
       });
     };
