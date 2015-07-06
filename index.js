@@ -1,7 +1,6 @@
 /**
- * Description: index.js
- * Author: crossjs <liwenfu@crossjs.com>
- * Date: 2014-12-22 14:47:03
+ * @module Select
+ * @author crossjs <liwenfu@crossjs.com>
  */
 
 'use strict';
@@ -191,6 +190,8 @@ var Select = Overlay.extend({
     disabled: false,
     maxHeight: null,
 
+    scrollTrigger: null,
+
     // 以下不要覆盖
     selectSource: null // 原生表单项的引用，select/input
   },
@@ -286,7 +287,7 @@ var Select = Overlay.extend({
   setup: function() {
     this._bindEvents();
     this._initOptions();
-    this._initHeight();
+    this._initWidthAndHeight();
     this._tweakAlignDefaultValue();
     // 调用 overlay，点击 body 隐藏
     this._blurHide(this.get('trigger'));
@@ -472,6 +473,7 @@ var Select = Overlay.extend({
     var selected = this.options.eq(this.get('selectedIndex'));
     this.trigger('disabledChange', selected, val);
   },
+
   _onRenderData: function(data) {
     if (data.length) {
       this.syncModel(data);
@@ -536,8 +538,10 @@ var Select = Overlay.extend({
     }
   },
 
-  _initHeight: function() {
+  _initWidthAndHeight: function() {
     this.after('show', function() {
+      this._setTriggerWidth();
+
       var maxHeight = this.get('maxHeight');
 
       if (maxHeight) {
