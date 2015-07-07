@@ -1,6 +1,7 @@
 /**
- * @module Select
- * @author crossjs <liwenfu@crossjs.com>
+ * Description: index.js
+ * Author: crossjs <liwenfu@crossjs.com>
+ * Date: 2014-12-22 14:47:03
  */
 
 'use strict';
@@ -506,11 +507,11 @@ var Select = Overlay.extend({
   },
 
   // trigger 的宽度和浮层保持一致
-  _setTriggerWidth: function() {
+  _setTriggerWidth: function(fromShow) {
     var trigger = this.get('trigger');
 
     // add scrollbar width: 3
-    trigger.css('width', this.element.outerWidth() + this.get('scrollbarWidth'));
+    trigger.css('width', this.element.outerWidth() + (fromShow ? 0 : this.get('scrollbarWidth')));
 
     // 因为 trigger 的宽度可能受 CSS（如 max-width） 限制，
     // 最后将 element 的宽度设置为与 trigger 等宽
@@ -540,7 +541,7 @@ var Select = Overlay.extend({
 
   _initWidthAndHeight: function() {
     this.after('show', function() {
-      this._setTriggerWidth();
+      this._setTriggerWidth(true);
 
       var maxHeight = this.get('maxHeight');
 
