@@ -1,7 +1,6 @@
 /**
- * Description: index.js
- * Author: crossjs <liwenfu@crossjs.com>
- * Date: 2014-12-22 14:47:03
+ * @module Select
+ * @author crossjs <liwenfu@crossjs.com>
  */
 
 'use strict';
