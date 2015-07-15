@@ -291,18 +291,18 @@ var Select = Overlay.extend({
     this._tweakAlignDefaultValue();
     // 调用 overlay，点击 body 隐藏
     this._blurHide(this.get('trigger'));
-    
+
     this.after('show', function() {
       var align = this.get('align');
       var alignBase = align.baseElement;
       //默认是展示在trigger的下方，当trigger底部区域不足以显示内容时改为trigger上方
-      if(alignBase.offset().top+alignBase.height()+this.element.height()>$(window).height()) {
+      if (alignBase.offset().top + alignBase.height() + this.element.height() > $(window).height()) {
         align.baseXY = [0, '1px'];
         align.selfXY = [0, '100%'];
       }
-      this.set('align',align);
+      this.set('align', align);
     });
-    
+
     Select.superclass.setup.call(this);
   },
 
