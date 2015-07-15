@@ -295,12 +295,19 @@ var Select = Overlay.extend({
     this.after('show', function() {
       var align = this.get('align');
       var alignBase = align.baseElement;
-      //默认是展示在trigger的下方，当trigger底部区域不足以显示内容时改为trigger上方
+      // 默认是展示在 trigger 的下方，
+      // 当 trigger 底部区域不足以显示内容时改为 trigger 上方
       if (alignBase.offset().top + alignBase.height() + this.element.height() > $(window).height()) {
-        align.baseXY = [0, '1px'];
-        align.selfXY = [0, '100%'];
+        this.set('align', {
+          baseXY: [0, '1px'],
+          selfXY: [0, '100%']
+        });
       }
-      this.set('align', align);
+      this.get('trigger').addClass('ui-select-opened');
+    });
+
+    this.after('hide', function() {
+      this.get('trigger').removeClass('ui-select-opened');
     });
 
     Select.superclass.setup.call(this);
