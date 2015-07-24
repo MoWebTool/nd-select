@@ -605,6 +605,13 @@ Select.pluginEntry = {
     typeof host.addField === 'function' &&
       host.after('addField', plugin.execute);
 
+    typeof host.removeField === 'function' &&
+      host.before('removeField', function(name) {
+        if (name in _widgets) {
+          _widgets[name].destroy();
+        }
+      });
+
     host.before('destroy', function() {
       Object.keys(_widgets).forEach(function(key) {
         _widgets[key].destroy();
