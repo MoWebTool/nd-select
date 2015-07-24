@@ -525,11 +525,14 @@ var Select = Overlay.extend({
   },
 
   // trigger 的宽度和浮层保持一致
-  _setTriggerWidth: function(fromShow) {
+  _setTriggerWidth: function() {
     var trigger = this.get('trigger');
 
+    // reset
+    this.element.width('auto');
+
     // add scrollbar width: 3
-    trigger.css('width', this.element.outerWidth() + (fromShow ? 0 : this.get('scrollbarWidth')));
+    trigger.css('width', this.element.outerWidth() + this.get('scrollbarWidth'));
 
     // 因为 trigger 的宽度可能受 CSS（如 max-width） 限制，
     // 最后将 element 的宽度设置为与 trigger 等宽
@@ -559,8 +562,6 @@ var Select = Overlay.extend({
 
   _initWidthAndHeight: function() {
     this.after('show', function() {
-      this._setTriggerWidth(true);
-
       var maxHeight = this.get('maxHeight');
 
       if (maxHeight) {
