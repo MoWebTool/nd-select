@@ -591,14 +591,16 @@ Select.pluginEntry = {
     }
 
     plugin.execute = function() {
-      host.$('select:not([data-rendered])').each(function(i, field) {
-        field.setAttribute('data-rendered', 'true');
-        addWidget(field.name, new Select($.extend(true, {
-          trigger: field,
-          disabled: !!field.disabled,
-          scrollTrigger: field.getAttribute('scrollTrigger') || null
-        }, plugin.getOptions('config'))).render());
-      });
+      host.$('select:not([data-rendered])')
+        .filter(':not([data-rendered])')
+        .each(function(i, field) {
+          field.setAttribute('data-rendered', 'true');
+          addWidget(field.name, new Select($.extend(true, {
+            trigger: field,
+            disabled: !!field.disabled,
+            scrollTrigger: field.getAttribute('scrollTrigger') || null
+          }, plugin.getOptions('config'))).render());
+        });
     };
 
     host.after('render', plugin.execute);
