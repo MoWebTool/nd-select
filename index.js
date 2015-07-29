@@ -365,12 +365,12 @@ var Select = Overlay.extend({
     // 同步原来的 select
     syncSelect(this.get('selectSource'), model);
     // 渲染后重置 select 的属性
-    this.options = this.$('[data-role=content]').children();
+    this.options = this.$('[data-role="content"]').children();
     this.set('length', this.options.length);
     this.set('selectedIndex', -1);
     this.set('value', '');
 
-    var selectIndex = getOptionIndex('[data-selected=true]', this.options);
+    var selectIndex = getOptionIndex('[data-selected="true"]', this.options);
     this.set('selectedIndex', selectIndex);
 
     // 重新设置 trigger 宽度
@@ -400,7 +400,7 @@ var Select = Overlay.extend({
 
     // 删除 option，更新属性
     removedOption.remove();
-    this.options = this.$('[data-role=content]').children();
+    this.options = this.$('[data-role="content"]').children();
     this.set('length', this.options.length);
 
     // 如果被删除的是当前选中的，则选中第一个
@@ -473,7 +473,7 @@ var Select = Overlay.extend({
 
     // 填入选中内容，位置先找 "data-role"="trigger-content"，再找 trigger
     var trigger = this.get('trigger');
-    var triggerContent = trigger.find('[data-role=trigger-content]');
+    var triggerContent = trigger.find('[data-role="trigger-content"]');
 
     if (triggerContent.length) {
       triggerContent.html(selected.html());
@@ -517,10 +517,10 @@ var Select = Overlay.extend({
   },
 
   _initOptions: function() {
-    this.options = this.$('[data-role=content]').children();
+    this.options = this.$('[data-role="content"]').children();
     // 初始化 select 的参数
     // 必须在插入文档流后操作
-    this.select('[data-selected=true]');
+    this.select('[data-selected="true"]');
     this.set('length', this.options.length);
   },
 
@@ -565,7 +565,7 @@ var Select = Overlay.extend({
       var maxHeight = this.get('maxHeight');
 
       if (maxHeight) {
-        var ul = this.$('[data-role=content]');
+        var ul = this.$('[data-role="content"]');
         var height = getLiHeight(ul);
 
         this.set('height', height > maxHeight ? maxHeight : '');
@@ -595,6 +595,7 @@ Select.pluginEntry = {
         field.setAttribute('data-rendered', 'true');
         addWidget(field.name, new Select($.extend(true, {
           trigger: field,
+          disabled: !!field.disabled,
           scrollTrigger: field.getAttribute('scrollTrigger') || null
         }, plugin.getOptions('config'))).render());
       });
