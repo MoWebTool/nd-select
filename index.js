@@ -448,14 +448,12 @@ var Select = Overlay.extend({
 
     if (multiple) {
       if (!Array.isArray(selectIndex)) {
-        var _a = [];
-        _a.push(selectIndex);
-        selectIndex = _a;
+        selectIndex = [selectIndex];
       }
 
       this.set('selectedIndexes', selectIndex);
     } else {
-      // this.set('selectedIndex', -1);
+      this.set('selectedIndex', -1);
       this.set('selectedIndex', selectIndex);
 
       // 重新设置 trigger 宽度
