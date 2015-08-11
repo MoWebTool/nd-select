@@ -537,6 +537,7 @@ var Select = Overlay.extend({
 
     if (source) {
       var sourceElement = source[0];
+      var oldValue = source.val();
 
       if (sourceElement.tagName.toLowerCase() === 'select') {
         sourceElement.selectedIndex = index;
@@ -544,8 +545,12 @@ var Select = Overlay.extend({
         sourceElement.value = value;
       }
 
+      if (!value) {
+        value = null;
+      }
+
       // 触发 change
-      source.trigger('change');
+      (oldValue !== value) && source.trigger('change');
     }
 
     // 处理之前选中的元素
@@ -596,6 +601,9 @@ var Select = Overlay.extend({
 
     if (source) {
       var sourceElement = source[0];
+      var oldValues = source.val();
+
+      var _values = values.length ? JSON.stringify(values) : null;
 
       if (sourceElement.tagName.toLowerCase() === 'select') {
         var sourceOptions = sourceElement.options;
@@ -605,12 +613,11 @@ var Select = Overlay.extend({
           sourceOptions[i].selected = indexes.indexOf(i) !== -1;
         }
       } else {
-
-        sourceElement.value = JSON.stringify(values);
+        sourceElement.value = _values;
       }
 
       // 触发 change
-      source.trigger('change');
+      (oldValues !== _values) && source.trigger('change');
     }
 
     this.set('value', values);
