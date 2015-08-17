@@ -773,7 +773,7 @@ Select.pluginEntry = {
           field.setAttribute('data-rendered', 'true');
           addWidget(field.name, new Select($.extend(true, {
             trigger: field,
-            disabled: !!field.disabled
+            disabled: !!field.disabled || !!field.getAttribute('readonly')
           }, plugin.getOptions('config'))).render());
         });
     };
