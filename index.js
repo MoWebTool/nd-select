@@ -209,6 +209,7 @@ var Select = Overlay.extend({
     multiple: false, // TODO
     disabled: false,
     maxHeight: null,
+    maxWidth: 200,
 
     // 以下不要覆盖
     selectSource: null // 原生表单项的引用，select/input
@@ -681,7 +682,7 @@ var Select = Overlay.extend({
   _setTriggerWidth: function() {
     var trigger = this.get('trigger');
     var element = this.element;
-
+    
     if (this.get('multiple')) {
       trigger.width('auto');
       element.css('width', trigger.outerWidth());
@@ -689,10 +690,18 @@ var Select = Overlay.extend({
       // reset
       element.width('auto');
       // add scrollbar width: 3
-      trigger.css('width', element.outerWidth() + this.get('scrollbarWidth'));
-      // 因为 trigger 的宽度可能受 CSS（如 max-width） 限制，
-      // 最后将 element 的宽度设置为与 trigger 等宽
-      element.css('width', trigger.outerWidth());
+      var triggerWidth = element.outerWidth() + this.get('scrollbarWidth');
+      if(triggerWidth > this.get('maxWidth')){
+        trigger.css('width', this.get('maxWidth'));
+        // 因为 trigger 的宽度可能受 CSS（如 max-width） 限制，
+        // 最后将 element 的宽度设置为与 trigger 等宽
+        element.css('width', this.get('maxWidth'));
+      } else {      
+        trigger.css('width', triggerWidth);
+        // 因为 trigger 的宽度可能受 CSS（如 max-width） 限制，
+        // 最后将 element 的宽度设置为与 trigger 等宽
+        element.css('width', triggerWidth);
+      }
     }
   },
 
