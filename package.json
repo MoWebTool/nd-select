@@ -1,12 +1,16 @@
 {
   "name": "nd-select",
-  "version": "1.0.0",
+  "version": "3.0.0",
   "description": "模拟 select 的组件，支持级联操作。",
   "keywords": [],
   "homepage": "https://github.com/ndfront/nd-select",
   "author": {
     "name": "crossjs",
     "email": "liwenfu@crossjs.com"
+  },
+  "scripts": {
+    "test": "mocha --bail --timeout 200 --slow 99999 tests/**/*-spec.js",
+    "coverage": "node_modules/isparta/bin/isparta cover node_modules/mocha/bin/_mocha -- --bail --timeout 200 --slow 99999 -R dot tests/**/*-spec.js"
   },
   "repository": {
     "type": "git",
@@ -16,18 +20,17 @@
     "url": "https://github.com/ndfront/nd-select/issues"
   },
   "licenses": "MIT",
-  "devDependencies": {},
-  "spm": {
-    "main": "index.js",
-    "dependencies": {
-      "handlebars-runtime": "3.0.1",
-      "jquery": "1.11.1",
-      "nd-overlay": "1.0.0",
-      "nd-template": "1.0.0"
-    },
-    "devDependencies": {
-      "expect.js": "0.3.1",
-      "sinon": "1.6.0"
-    }
+  "main": "index.js",
+  "dependencies": {
+    "handlebars": "^4.0.5",
+    "jquery": "^1.11.1",
+    "nd-overlay": "^3.0.0",
+    "nd-template": "^3.0.0"
+  },
+  "devDependencies": {
+    "expect.js": "^0.3.1",
+    "isparta": "^4.0.0",
+    "mocha": "^2.4.5"
+    "sinon": "^1.17.3"
   }
 }
