@@ -1,6 +1,6 @@
 {
   "name": "nd-select",
-  "version": "3.0.0",
+  "version": "3.0.1",
   "description": "模拟 select 的组件，支持级联操作。",
   "keywords": [],
   "homepage": "https://github.com/ndfront/nd-select",
@@ -23,9 +23,9 @@
   "main": "index.js",
   "dependencies": {
     "handlebars": "^4.0.5",
-    "jquery": "^1.11.1",
-    "nd-overlay": "^3.0.0",
-    "nd-template": "^3.0.0"
+    "nd-overlay": "^3.0.1",
+    "nd-template": "^3.0.1",
+    "nd-jquery": "^2.2.1"
   },
   "devDependencies": {
     "expect.js": "^0.3.1",
