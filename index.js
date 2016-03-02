@@ -198,7 +198,7 @@ var Select = Overlay.extend({
     triggerTpl: '<a href="#"></a>',
 
     // 滚动条宽度
-    scrollbarWidth: 3,
+    scrollbarWidth: 6,
 
     // 原生 select 的属性
     name: '',
