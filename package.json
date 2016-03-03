@@ -1,6 +1,6 @@
 {
   "name": "nd-select",
-  "version": "3.0.1",
+  "version": "3.0.2",
   "description": "模拟 select 的组件，支持级联操作。",
   "keywords": [],
   "homepage": "https://github.com/ndfront/nd-select",
