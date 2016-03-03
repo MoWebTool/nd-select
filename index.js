@@ -682,21 +682,21 @@ var Select = Overlay.extend({
   _setTriggerWidth: function() {
     var trigger = this.get('trigger');
     var element = this.element;
-    
+
     if (this.get('multiple')) {
       trigger.width('auto');
       element.css('width', trigger.outerWidth());
     } else {
       // reset
       element.width('auto');
-      // add scrollbar width: 3
+      // add scrollbar width: 6
       var triggerWidth = element.outerWidth() + this.get('scrollbarWidth');
       if(triggerWidth > this.get('maxWidth')){
         trigger.css('width', this.get('maxWidth'));
         // 因为 trigger 的宽度可能受 CSS（如 max-width） 限制，
         // 最后将 element 的宽度设置为与 trigger 等宽
         element.css('width', this.get('maxWidth'));
-      } else {      
+      } else {
         trigger.css('width', triggerWidth);
         // 因为 trigger 的宽度可能受 CSS（如 max-width） 限制，
         // 最后将 element 的宽度设置为与 trigger 等宽

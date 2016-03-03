@@ -1,13 +1,22 @@
 'use strict';
 
-var $ = require('nd-jquery');
-var expect = require('expect.js');
-var sinon = require('sinon');
-var Select = require('../index');
+var $ = require('nd-jquery')
+var chai = require('chai')
+var sinonChai = require('sinon-chai')
+var Select = require('../index')
+
+var expect = chai.expect
+var sinon = window.sinon
+
+chai.use(sinonChai)
 
 /*globals describe,it,afterEach*/
 
 describe('Select', function() {
+
+  function isVisible(elem) {
+    return elem.offsetWidth > 0 || elem.offsetHeight > 0
+  }
 
   var trigger, select;
 
@@ -28,27 +37,27 @@ describe('Select', function() {
       trigger: '#example'
     }).render();
 
-    expect(select.get('selectSource')[0]).to.be(trigger[0]);
-    expect(trigger.is(':hidden')).to.be(false);
-    expect(select.get('trigger').html()).to.be('text1');
-    expect(select.get('value')).to.be('value1');
-    expect(select.get('length')).to.be(2);
-    expect(select.get('selectedIndex')).to.be(0);
-    expect(select.currentItem[0]).to.be(select.element.find('[data-role=item]')[0]);
+    expect(select.get('selectSource')[0]).to.equal(trigger[0]);
+    expect(isVisible(trigger[0])).to.equal(true);
+    expect(select.get('trigger').html()).to.equal('text1');
+    expect(select.get('value')).to.equal('value1');
+    expect(select.get('length')).to.equal(2);
+    expect(select.get('selectedIndex')).to.equal(0);
+    expect(select.currentItem[0]).to.equal(select.element.find('[data-role=item]')[0]);
     expect(select.options.eq(0).attr('data-selected'))
-    .to.be('true');
+    .to.equal('true');
     expect(select.options.eq(0).attr('data-defaultSelected'))
-    .to.be('false');
+    .to.equal('false');
     expect(select.options.eq(1).attr('data-selected'))
-    .to.be('false');
+    .to.equal('false');
     expect(select.options.eq(1).attr('data-defaultSelected'))
-    .to.be('false');
+    .to.equal('false');
 
     select.get('trigger').mouseenter();
-    expect(select.get('trigger').hasClass(select.get('classPrefix') + '-trigger-hover')).to.be(true);
+    expect(select.get('trigger').hasClass(select.get('classPrefix') + '-trigger-hover')).to.equal(true);
 
     select.get('trigger').mouseleave();
-    expect(select.get('trigger').hasClass(select.get('classPrefix') + '-trigger-hover')).to.be(false);
+    expect(select.get('trigger').hasClass(select.get('classPrefix') + '-trigger-hover')).to.equal(false);
   });
 
   describe('convert model', function() {
@@ -59,14 +68,14 @@ describe('Select', function() {
       }).render();
 
       var model = select.get('model').select;
-      expect(model[0].defaultSelected).to.be(false);
-      expect(model[0].selected).to.be(true);
-      expect(model[0].value).to.be('value1');
-      expect(model[0].text).to.be('text1');
-      expect(model[1].defaultSelected).to.be(false);
-      expect(model[1].selected).to.be(false);
-      expect(model[1].value).to.be('value2');
-      expect(model[1].text).to.be('text2');
+      expect(model[0].defaultSelected).to.equal(false);
+      expect(model[0].selected).to.equal(true);
+      expect(model[0].value).to.equal('value1');
+      expect(model[0].text).to.equal('text1');
+      expect(model[1].defaultSelected).to.equal(false);
+      expect(model[1].selected).to.equal(false);
+      expect(model[1].value).to.equal('value2');
+      expect(model[1].text).to.equal('text2');
     });
 
     it('select second item when trigger is select', function() {
@@ -76,14 +85,14 @@ describe('Select', function() {
       }).render();
 
       var model = select.get('model').select;
-      expect(model[0].defaultSelected).to.be(false);
-      expect(model[0].selected).to.be(false);
-      expect(model[0].value).to.be('value1');
-      expect(model[0].text).to.be('text1');
-      expect(model[1].defaultSelected).to.be(true);
-      expect(model[1].selected).to.be(true);
-      expect(model[1].value).to.be('value2');
-      expect(model[1].text).to.be('text2');
+      expect(model[0].defaultSelected).to.equal(false);
+      expect(model[0].selected).to.equal(false);
+      expect(model[0].value).to.equal('value1');
+      expect(model[0].text).to.equal('text1');
+      expect(model[1].defaultSelected).to.equal(true);
+      expect(model[1].selected).to.equal(true);
+      expect(model[1].value).to.equal('value2');
+      expect(model[1].text).to.equal('text2');
     });
 
     it('disable second item when trigger is disabled', function() {
@@ -93,8 +102,8 @@ describe('Select', function() {
       }).render();
 
       var model = select.get('model').select;
-      expect(model[0].disabled).to.be(false);
-      expect(model[1].disabled).to.be(true);
+      expect(model[0].disabled).to.equal(false);
+      expect(model[1].disabled).to.equal(true);
     });
 
     it('select both item when trigger is select', function() {
@@ -104,14 +113,14 @@ describe('Select', function() {
       }).render();
 
       var model = select.get('model').select;
-      expect(model[0].defaultSelected).to.be(true);
-      expect(model[0].selected).to.be(false);
-      expect(model[0].value).to.be('value1');
-      expect(model[0].text).to.be('text1');
-      expect(model[1].defaultSelected).to.be(true);
-      expect(model[1].selected).to.be(true);
-      expect(model[1].value).to.be('value2');
-      expect(model[1].text).to.be('text2');
+      expect(model[0].defaultSelected).to.equal(true);
+      expect(model[0].selected).to.equal(false);
+      expect(model[0].value).to.equal('value1');
+      expect(model[0].text).to.equal('text1');
+      expect(model[1].defaultSelected).to.equal(true);
+      expect(model[1].selected).to.equal(true);
+      expect(model[1].value).to.equal('value2');
+      expect(model[1].text).to.equal('text2');
     });
 
     it('no selected item when trigger is other DOM', function() {
@@ -125,14 +134,14 @@ describe('Select', function() {
       }).render();
 
       var model = select.get('model').select;
-      expect(model[0].defaultSelected).to.be(false);
-      expect(model[0].selected).to.be(true);
-      expect(model[0].value).to.be('value1');
-      expect(model[0].text).to.be('text1');
-      expect(model[1].defaultSelected).to.be(false);
-      expect(model[1].selected).to.be(false);
-      expect(model[1].value).to.be('value2');
-      expect(model[1].text).to.be('text2');
+      expect(model[0].defaultSelected).to.equal(false);
+      expect(model[0].selected).to.equal(true);
+      expect(model[0].value).to.equal('value1');
+      expect(model[0].text).to.equal('text1');
+      expect(model[1].defaultSelected).to.equal(false);
+      expect(model[1].selected).to.equal(false);
+      expect(model[1].value).to.equal('value2');
+      expect(model[1].text).to.equal('text2');
     });
 
     it('select second item when trigger is other DOM', function() {
@@ -146,14 +155,14 @@ describe('Select', function() {
       }).render();
 
       var model = select.get('model').select;
-      expect(model[0].defaultSelected).to.be(false);
-      expect(model[0].selected).to.be(false);
-      expect(model[0].value).to.be('value1');
-      expect(model[0].text).to.be('text1');
-      expect(model[1].defaultSelected).to.be(true);
-      expect(model[1].selected).to.be(true);
-      expect(model[1].value).to.be('value2');
-      expect(model[1].text).to.be('text2');
+      expect(model[0].defaultSelected).to.equal(false);
+      expect(model[0].selected).to.equal(false);
+      expect(model[0].value).to.equal('value1');
+      expect(model[0].text).to.equal('text1');
+      expect(model[1].defaultSelected).to.equal(true);
+      expect(model[1].selected).to.equal(true);
+      expect(model[1].value).to.equal('value2');
+      expect(model[1].text).to.equal('text2');
     });
 
     it('select both item when trigger is other DOM', function() {
@@ -167,14 +176,14 @@ describe('Select', function() {
       }).render();
 
       var model = select.get('model').select;
-      expect(model[0].defaultSelected).to.be(true);
-      expect(model[0].selected).to.be(false);
-      expect(model[0].value).to.be('value1');
-      expect(model[0].text).to.be('text1');
-      expect(model[1].defaultSelected).to.be(true);
-      expect(model[1].selected).to.be(true);
-      expect(model[1].value).to.be('value2');
-      expect(model[1].text).to.be('text2');
+      expect(model[0].defaultSelected).to.equal(true);
+      expect(model[0].selected).to.equal(false);
+      expect(model[0].value).to.equal('value1');
+      expect(model[0].text).to.equal('text1');
+      expect(model[1].defaultSelected).to.equal(true);
+      expect(model[1].selected).to.equal(true);
+      expect(model[1].value).to.equal('value2');
+      expect(model[1].text).to.equal('text2');
     });
 
     it('no option', function() {
@@ -184,7 +193,7 @@ describe('Select', function() {
       }).render();
 
       var model = select.get('model').select;
-      expect(model.length).to.be(0);
+      expect(model.length).to.equal(0);
     });
 
     it('customize triggerTpl', function() {
@@ -194,8 +203,8 @@ describe('Select', function() {
         triggerTpl: '<p></p>'
       }).render();
 
-      expect(select.get('trigger').hasClass('ui-select-trigger')).to.be(true);
-      expect(select.get('trigger')[0].tagName).to.be('P');
+      expect(select.get('trigger').hasClass('ui-select-trigger')).to.equal(true);
+      expect(select.get('trigger')[0].tagName).to.equal('P');
     });
 
   });
@@ -214,16 +223,16 @@ describe('Select', function() {
       }).on('change', function() {
         count++;
       });
-      expect(count).to.be(0);
+      expect(count).to.equal(0);
 
       select.render();
-      expect(count).to.be(0);
+      expect(count).to.equal(0);
 
       select.select(1);
-      expect(count).to.be(0);
+      expect(count).to.equal(0);
 
       select.select(2);
-      expect(count).to.be(1);
+      expect(count).to.equal(1);
     });
 
     it('hide after selected', function() {
@@ -238,7 +247,7 @@ describe('Select', function() {
       }).render();
       select.show().select(1);
 
-      expect(select.get('visible')).to.be(false);
+      expect(select.get('visible')).to.equal(false);
     });
 
     it('by index', function() {
@@ -253,7 +262,7 @@ describe('Select', function() {
       }).render();
 
       select.select(2);
-      expect(select.get('selectedIndex')).to.be(2);
+      expect(select.get('selectedIndex')).to.equal(2);
     });
 
     it('by selector', function() {
@@ -268,7 +277,7 @@ describe('Select', function() {
       }).render();
 
       select.select('[data-value=value3]');
-      expect(select.get('selectedIndex')).to.be(2);
+      expect(select.get('selectedIndex')).to.equal(2);
     });
 
     it('by dom', function() {
@@ -284,7 +293,7 @@ describe('Select', function() {
 
       var option = select.options[2];
       select.select(option);
-      expect(select.get('selectedIndex')).to.be(2);
+      expect(select.get('selectedIndex')).to.equal(2);
     });
   });
 
@@ -299,24 +308,24 @@ describe('Select', function() {
       ]
     }).render();
 
-    expect(select.currentItem[0]).to.be(select.options.eq(1)[0]);
-    expect(select.get('value')).to.be('value2');
-    expect(select.get('trigger').html()).to.be('text2');
+    expect(select.currentItem[0]).to.equal(select.options.eq(1)[0]);
+    expect(select.get('value')).to.equal('value2');
+    expect(select.get('trigger').html()).to.equal('text2');
     expect(select.options.eq(1).attr('data-selected'))
-      .to.be('true');
+      .to.equal('true');
     expect(select.options.eq(2).attr('data-selected'))
-      .to.be('false');
+      .to.equal('false');
 
     var option = select.options[2];
     select.select(option);
 
-    expect(select.currentItem[0]).to.be(option);
-    expect(select.get('value')).to.be('value3');
-    expect(select.get('trigger').html()).to.be('text3');
+    expect(select.currentItem[0]).to.equal(option);
+    expect(select.get('value')).to.equal('value3');
+    expect(select.get('trigger').html()).to.equal('text3');
     expect(select.options.eq(1).attr('data-selected'))
-      .to.be('false');
+      .to.equal('false');
     expect(select.options.eq(2).attr('data-selected'))
-      .to.be('true');
+      .to.equal('true');
   });
 
   it('syncModel', function() {
@@ -334,19 +343,19 @@ describe('Select', function() {
       {value: 'value4', text: 'text4', selected: true}
     ]);
 
-    expect(select.get('trigger').html()).to.be('text4');
-    expect(select.get('value')).to.be('value4');
-    expect(select.get('length')).to.be(2);
-    expect(select.get('selectedIndex')).to.be(1);
-    expect(select.currentItem[0]).to.be(select.element.find('[data-role=item]')[1]);
+    expect(select.get('trigger').html()).to.equal('text4');
+    expect(select.get('value')).to.equal('value4');
+    expect(select.get('length')).to.equal(2);
+    expect(select.get('selectedIndex')).to.equal(1);
+    expect(select.currentItem[0]).to.equal(select.element.find('[data-role=item]')[1]);
     expect(select.options.eq(0).attr('data-defaultSelected'))
-      .to.be('false');
+      .to.equal('false');
     expect(select.options.eq(0).attr('data-selected'))
-      .to.be('false');
+      .to.equal('false');
     expect(select.options.eq(1).attr('data-defaultSelected'))
-      .to.be('true');
+      .to.equal('true');
     expect(select.options.eq(1).attr('data-selected'))
-      .to.be('true');
+      .to.equal('true');
   });
 
   it('trigger mousedown', function() {
@@ -360,9 +369,9 @@ describe('Select', function() {
     }).render();
 
     trigger.mousedown();
-    expect(select.element.is(':hidden')).to.be(false);
+    expect(isVisible(select.element[0])).to.equal(true);
     select.hide();
-    expect(select.element.is(':hidden')).to.be(true);
+    expect(isVisible(select.element[0])).to.equal(false);
   });
 
   it('set disabled', function() {
@@ -377,14 +386,14 @@ describe('Select', function() {
     }).render();
 
     trigger.mousedown();
-    expect(trigger.hasClass('ui-select-disabled')).to.be(true);
-    expect(select.element.is(':hidden')).to.be(true);
+    expect(trigger.hasClass('ui-select-disabled')).to.equal(true);
+    expect(isVisible(select.element[0])).to.equal(false);
     select.hide();
 
     select.set('disabled', false);
     trigger.mousedown();
-    expect(trigger.hasClass('ui-select-disabled')).to.be(false);
-    expect(select.element.is(':hidden')).to.be(false);
+    expect(trigger.hasClass('ui-select-disabled')).to.equal(false);
+    expect(isVisible(select.element[0])).to.equal(true);
   });
 
   it('set classPrefix', function() {
@@ -394,16 +403,16 @@ describe('Select', function() {
       classPrefix: 'test'
     }).render();
 
-    expect(select.element.hasClass('test')).to.be(true);
-    expect(select.get('trigger').hasClass('test-trigger')).to.be(true);
-    expect(select.$('.test-content').length).to.be(1);
-    expect(select.$('.test-item').length).to.be(2);
-    expect(select.options.eq(0).hasClass('test-selected')).to.be(false);
-    expect(select.options.eq(1).hasClass('test-selected')).to.be(true);
+    expect(select.element.hasClass('test')).to.equal(true);
+    expect(select.get('trigger').hasClass('test-trigger')).to.equal(true);
+    expect(select.$('.test-content').length).to.equal(1);
+    expect(select.$('.test-item').length).to.equal(2);
+    expect(select.options.eq(0).hasClass('test-selected')).to.equal(false);
+    expect(select.options.eq(1).hasClass('test-selected')).to.equal(true);
 
     select.select(0);
-    expect(select.options.eq(0).hasClass('test-selected')).to.be(true);
-    expect(select.options.eq(1).hasClass('test-selected')).to.be(false);
+    expect(select.options.eq(0).hasClass('test-selected')).to.equal(true);
+    expect(select.options.eq(1).hasClass('test-selected')).to.equal(false);
   });
 
   it('attr name when trigger is select', function() {
@@ -413,7 +422,7 @@ describe('Select', function() {
       trigger: '#example'
     }).render();
 
-    expect(select.get('name')).to.be('example');
+    expect(select.get('name')).to.equal('example');
   });
 
   it('attr name when trigger is DOM', function() {
@@ -428,27 +437,8 @@ describe('Select', function() {
       name: 'example'
     }).render();
 
-    expect(!$('#select-example')[0]).to.be(false);
-    expect($('#select-example').attr('name')).to.be('example');
-  });
-
-  it('set trigger width', function() {
-    trigger = $('<a href="#" id="example"></a>')
-      .css({
-        display: 'block',
-        padding: '5px',
-        border: '5px solid #ccc'
-      }).appendTo(document.body);
-    select = new Select({
-      trigger: '#example',
-      model: [
-        {value: 'value1', text: 'text1'},
-        {value: 'value2', text: 'text2', selected: true}
-      ],
-      width: '200px'
-    }).render();
-
-    expect(trigger.width()).to.be(180);
+    expect(!$('#select-example')[0]).to.equal(false);
+    expect($('#select-example').attr('name')).to.equal('example');
   });
 
   it('get option', function() {
@@ -464,10 +454,10 @@ describe('Select', function() {
     }).render();
 
     var option = $('[data-selected=true]');
-    expect(select.getOption(2)[0]).to.be(select.options[2]);
+    expect(select.getOption(2)[0]).to.equal(select.options[2]);
     expect(select.getOption('[data-selected=true]')[0])
-      .to.be(select.options[1]);
-    expect(select.getOption(option)[0]).to.be(select.options[1]);
+      .to.equal(select.options[1]);
+    expect(select.getOption(option)[0]).to.equal(select.options[1]);
   });
 
   it('remove option', function() {
@@ -483,8 +473,8 @@ describe('Select', function() {
     }).render();
 
     select.removeOption(0);
-    expect(select.get('length')).to.be(2);
-    expect(select.get('selectedIndex')).to.be(1);
+    expect(select.get('length')).to.equal(2);
+    expect(select.get('selectedIndex')).to.equal(1);
   });
 
   it('remove selected option', function() {
@@ -501,9 +491,9 @@ describe('Select', function() {
 
     var option = select.options[2];
     select.removeOption('[data-selected=true]');
-    expect(select.get('length')).to.be(2);
-    expect(select.get('selectedIndex')).to.be(0);
-    expect(select.options[1]).to.be(option);
+    expect(select.get('length')).to.equal(2);
+    expect(select.get('selectedIndex')).to.equal(0);
+    expect(select.options[1]).to.equal(option);
   });
 
   it('add option', function() {
@@ -520,9 +510,9 @@ describe('Select', function() {
     select.addOption({value: 'value4', text: 'text4'});
 
     var option = select.options.eq(3);
-    expect(select.get('length')).to.be(4);
-    expect(option.attr('data-value')).to.be('value4');
-    expect(option.html()).to.be('text4');
+    expect(select.get('length')).to.equal(4);
+    expect(option.attr('data-value')).to.equal('value4');
+    expect(option.html()).to.equal('text4');
   });
 
   it('disabledChange', function() {
@@ -540,13 +530,13 @@ describe('Select', function() {
 
     var selected = select.options.eq(1);
     select.render();
-    expect(spy.callCount).to.be(1);
-    expect(spy.withArgs(selected, false).called).to.be.ok();
+    expect(spy.callCount).to.equal(1);
+    expect(spy.withArgs(selected, false).called).to.be.equal(true);
 
     select.set('disabled', true);
     // console.log(spy.callCount)
-    expect(spy.callCount).to.be(2);
-    expect(spy.withArgs(selected, true).called).to.be.ok();
+    expect(spy.callCount).to.equal(2);
+    expect(spy.withArgs(selected, true).called).to.be.equal(true);
   });
 
   it('model should clone', function() {
@@ -570,8 +560,8 @@ describe('Select', function() {
       model: model
     }).render();
 
-    expect(select1.get('selectedIndex')).to.be(0);
-    expect(select2.get('selectedIndex')).to.be(0);
+    expect(select1.get('selectedIndex')).to.equal(0);
+    expect(select2.get('selectedIndex')).to.equal(0);
     example1.remove();
     example2.remove();
   });
@@ -584,13 +574,13 @@ describe('Select', function() {
     }).render();
 
     select.set('selectedIndex', 1);
-    expect(select.get('selectSource')[0].value).to.be('value2');
+    expect(select.get('selectSource')[0].value).to.equal('value2');
 
     select.syncModel([
       {value: 'value3', text: 'text3'},
       {value: 'value4', text: 'text4', selected: true}
     ]);
-    expect(select.get('selectSource')[0].value).to.be('value4');
+    expect(select.get('selectSource')[0].value).to.equal('value4');
   });
 
   it('sync selectSource when link', function() {
@@ -605,13 +595,13 @@ describe('Select', function() {
     }).render();
 
     select.set('selectedIndex', 1);
-    expect(select.get('selectSource')[0].value).to.be('value2');
+    expect(select.get('selectSource')[0].value).to.equal('value2');
 
     select.syncModel([
       {value: 'value3', text: 'text3'},
       {value: 'value4', text: 'text4', selected: true}
     ]);
-    expect(select.get('selectSource')[0].value).to.be('value4');
+    expect(select.get('selectSource')[0].value).to.equal('value4');
   });
 
   it('disable & enable option', function() {
@@ -626,9 +616,9 @@ describe('Select', function() {
       ]
     }).render();
     select.disableOption(2);
-    expect(select.options.eq(2).data('disabled')).to.be.ok();
+    expect(select.options.eq(2).data('disabled')).to.be.equal(true);
     select.enableOption(2);
-    expect(select.options.eq(2).data('disabled')).not.to.be.ok();
+    expect(select.options.eq(2).data('disabled')).to.be.equal(false);
   });
 
   it('html sync to model', function() {
@@ -643,11 +633,11 @@ describe('Select', function() {
       ]
     }).render();
     select.select(0);
-    expect(select.get('model').select[0].selected).to.be.ok();
+    expect(select.get('model').select[0].selected).to.be.equal(true);
     select.select(1);
-    expect(select.get('model').select[1].selected).to.be.ok();
+    expect(select.get('model').select[1].selected).to.be.equal(true);
     select.select(2);
-    expect(select.get('model').select[2].selected).to.be.ok();
+    expect(select.get('model').select[2].selected).to.be.equal(true);
   });
 
   it('html original select should be visiable', function() {
@@ -655,7 +645,7 @@ describe('Select', function() {
     select = new Select({
       trigger: '#example'
     }).render();
-    expect(select.get('selectSource').is(':visible')).to.be.ok();
+    expect(isVisible(select.get('selectSource')[0])).to.be.equal(true);
   });
 
   it('#54 completeModel bug', function () {
@@ -670,10 +660,10 @@ describe('Select', function() {
         {value: 'value4', text: 'text4', selected: true}
       ]
     }).render();
-    expect(select.get('model').select[0].selected).not.to.be.ok();
-    expect(select.get('model').select[1].selected).not.to.be.ok();
-    expect(select.get('model').select[2].selected).not.to.be.ok();
-    expect(select.get('model').select[3].selected).to.be.ok();
+    expect(select.get('model').select[0].selected).to.be.equal(false);
+    expect(select.get('model').select[1].selected).to.be.equal(false);
+    expect(select.get('model').select[2].selected).to.be.equal(false);
+    expect(select.get('model').select[3].selected).to.be.equal(true);
   });
 
 });
