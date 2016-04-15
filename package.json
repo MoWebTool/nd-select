@@ -1,6 +1,6 @@
 {
   "name": "nd-select",
-  "version": "3.0.2",
+  "version": "3.0.3",
   "description": "模拟 select 的组件，支持级联操作。",
   "keywords": [],
   "homepage": "https://github.com/ndfront/nd-select",
@@ -9,6 +9,9 @@
     "email": "liwenfu@crossjs.com"
   },
   "scripts": {
+    "prepublish": "npm run lint",
+    "lint": "eslint .",
+    "lint:fix": "npm run lint -- --fix",
     "test": "node ./node_modules/karma/bin/karma start ./karma.conf.js",
     "test:dev": "npm run test -- --watch"
   },

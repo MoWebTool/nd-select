@@ -1,13 +1,5 @@
 <div class="{{classPrefix}}{{#if multiple}} {{classPrefix}}-multiple{{/if}}">
-  <ul class="{{classPrefix}}-content" data-role="content">
-    {{#each select}}
-    <li data-role="item"
-      class="{{../classPrefix}}-item {{#if disabled}}{{../../classPrefix}}-item-disabled{{/if}}"
-      data-value="{{value}}"
-      data-defaultSelected="{{output defaultSelected}}"
-      data-selected="{{output selected}}"
-      data-disabled="{{output disabled}}"
-      title="{{text}}">{{text}}</li>
-    {{/each}}
+  <ul class="{{classPrefix}}-content" data-role="content" data-partial="options">
+    {{> options}}
   </ul>
 </div>

@@ -1,6 +1,6 @@
-'use strict';
+'use strict'
 
-var argv = require('yargs').argv;
+var argv = require('yargs').argv
 
 module.exports = function(config) {
   config.set({
@@ -43,6 +43,12 @@ module.exports = function(config) {
         loaders: [{
           test: /\.handlebars$/,
           loader: 'handlebars'
+        }, {
+          test: /\.html$/,
+          loader: 'html'
+        }, {
+          test: /\.gif$/,
+          loader: 'url?limit=8192'
         }]
       },
     },

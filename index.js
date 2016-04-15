@@ -3,16 +3,11 @@
  * @author crossjs <liwenfu@crossjs.com>
  */
 
-'use strict';
+'use strict'
 
-var $ = require('nd-jquery');
-var Overlay = require('nd-overlay');
-var Template = require('nd-template');
-
-var template = require('./src/select.handlebars');
-var partial = require('./src/options.handlebars');
-var items = require('./src/items.handlebars');
-
+var $ = require('nd-jquery')
+var Overlay = require('nd-overlay')
+var Template = require('nd-template')
 
 // Helper
 // ------
@@ -39,67 +34,67 @@ function convertSelect(select, classPrefix, multiple) {
   var i, model = [],
     options = select.options,
     l = options.length,
-    hasDefaultSelect = false;
+    hasDefaultSelect = false
 
   for (i = 0; i < l; i++) {
     var j, o = {},
-      option = options[i];
+      option = options[i]
     var fields = ['text', 'value', 'defaultSelected', 'selected', 'disabled'],
-      field;
+      field
 
     for (j in fields) {
-      field = fields[j];
-      o[field] = option[field];
+      field = fields[j]
+      o[field] = option[field]
     }
 
     if (option.selected) {
-      hasDefaultSelect = true;
+      hasDefaultSelect = true
     }
 
-    model.push(o);
+    model.push(o)
   }
 
   // 当所有都没有设置 selected，默认设置第一个
   if (!multiple && !hasDefaultSelect && model.length) {
-    model[0].selected = 'true';
+    model[0].selected = 'true'
   }
 
   return {
     select: model,
     classPrefix: classPrefix,
     multiple: multiple
-  };
+  }
 }
 
 // 补全 model 对象
 function completeModel(model, classPrefix, multiple) {
   var i, j, l, ll, newModel = [],
-    selectIndexArray = [];
+    selectIndexArray = []
 
   for (i = 0, l = model.length; i < l; i++) {
-    var o = $.extend({}, model[i]);
+    var o = $.extend({}, model[i])
 
     if (o.selected) {
-      selectIndexArray.push(i);
+      selectIndexArray.push(i)
     }
 
-    o.selected = o.defaultSelected = !!o.selected;
-    o.disabled = !!o.disabled;
+    o.selected = o.defaultSelected = !!o.selected
+    o.disabled = !!o.disabled
 
-    newModel.push(o);
+    newModel.push(o)
   }
 
   if (!multiple) {
     if (selectIndexArray.length > 0) {
       // 如果有多个 selected 则选中最后一个
-      selectIndexArray.pop();
+      selectIndexArray.pop()
 
       for (j = 0, ll = selectIndexArray.length; j < ll; j++) {
-        newModel[selectIndexArray[j]].selected = false;
+        newModel[selectIndexArray[j]].selected = false
       }
     } else {
       //当所有都没有设置 selected 则默认设置第一个
-      newModel[0].selected = true;
+      newModel[0].selected = true
     }
   }
 
@@ -107,50 +102,50 @@ function completeModel(model, classPrefix, multiple) {
     select: newModel,
     classPrefix: classPrefix,
     multiple: multiple
-  };
+  }
 }
 
 function getOptionIndex(option, options) {
   if ($.isNumeric(option)) { // 如果是索引
-    return option;
+    return option
   } else if (typeof option === 'string') { // 如果是选择器
-    var selected = options.parent().find(option);
+    var selected = options.parent().find(option)
 
     if (selected.length) {
       if (selected.length === 1) {
-        return options.index(selected);
+        return options.index(selected)
       } else {
-        var indexes = [];
+        var indexes = []
         selected.each(function(i, option) {
-          indexes[i] = options.index(option);
-        });
-        return indexes;
+          indexes[i] = options.index(option)
+        })
+        return indexes
       }
     } else {
-      return -1;
+      return -1
     }
   } else { // 如果是 DOM
-    return options.index(option);
+    return options.index(option)
   }
 }
 
 function syncSelect(select, model) {
   if (!(select && select[0])) {
-    return;
+    return
   }
 
-  select = select[0];
+  select = select[0]
 
   if (select.tagName.toLowerCase() === 'select') {
-    $(select).find('option').remove();
+    $(select).find('option').remove()
 
     for (var i in model) {
-      var m = model[i];
-      var option = document.createElement('option');
+      var m = model[i]
+      var option = document.createElement('option')
 
-      option.text = m.text;
-      option.value = m.value;
-      select.add(option);
+      option.text = m.text
+      option.value = m.value
+      select.add(option)
     }
   }
 }
@@ -158,36 +153,47 @@ function syncSelect(select, model) {
 // 获取 className ，如果 classPrefix 不设置，就返回 ''
 function getClassName(classPrefix, className) {
   if (!classPrefix) {
-    return '';
+    return ''
   }
 
-  return classPrefix + '-' + className;
+  return classPrefix + '-' + className
 }
 
 // 获取 ul 中所有 li 的高度
 function getLiHeight(ul) {
-  var height = 0;
+  var height = 0
   ul.find('li').each(function(index, item) {
-    height += $(item).outerHeight();
-  });
-  return height;
+    height += $(item).outerHeight()
+  })
+  return height
 }
+
+var items = require('./src/items.handlebars')
 
 var Select = Overlay.extend({
 
   Implements: Template,
+
+  templatePartials: {
+    options: require('./src/options.handlebars')
+  },
 
   attrs: {
     zIndex: 999,
     trigger: {
       value: null, // required
       getter: function(val) {
-        return $(val).eq(0);
+        return $(val).eq(0)
       }
     },
     classPrefix: 'ui-select',
-    template: template,
-    partial: partial,
+    template: require('./src/select.handlebars'),
+    templateHelpers: {
+      output: function(data) {
+        return data + ''
+      }
+    },
+    // partial: partial,
     data: [],
     // 定位配置
     align: {
@@ -217,31 +223,25 @@ var Select = Overlay.extend({
 
   events: {
     'click': function(e) {
-      e.stopPropagation();
+      e.stopPropagation()
     },
     'click [data-role="item"]': function(e) {
-      var target = $(e.currentTarget);
+      var target = $(e.currentTarget)
       if (!target.data('disabled')) {
-        this.select(target);
+        this.select(target)
       }
     },
     'mouseenter [data-role="item"]': function(e) {
-      var target = $(e.currentTarget);
+      var target = $(e.currentTarget)
       if (!target.data('disabled')) {
-        target.addClass(getClassName(this.get('classPrefix'), 'hover'));
+        target.addClass(getClassName(this.get('classPrefix'), 'hover'))
       }
     },
     'mouseleave [data-role="item"]': function(e) {
-      var target = $(e.currentTarget);
+      var target = $(e.currentTarget)
       if (!target.data('disabled')) {
-        target.removeClass(getClassName(this.get('classPrefix'), 'hover'));
+        target.removeClass(getClassName(this.get('classPrefix'), 'hover'))
       }
-    }
-  },
-
-  templateHelpers: {
-    output: function(data) {
-      return data + '';
     }
   },
 
@@ -249,30 +249,30 @@ var Select = Overlay.extend({
   // --------
 
   initAttrs: function(config, dataAttrsConfig) {
-    Select.superclass.initAttrs.call(this, config, dataAttrsConfig);
+    Select.superclass.initAttrs.call(this, config, dataAttrsConfig)
 
-    var selectName;
-    var trigger = this.get('trigger');
+    var selectName
+    var trigger = this.get('trigger')
 
     if (trigger[0].tagName.toLowerCase() === 'select') {
       // 初始化 name
       // 如果 select 的 name 存在则覆盖 name 属性
-      selectName = trigger.attr('name');
+      selectName = trigger.attr('name')
 
       if (selectName) {
-        this.set('name', selectName);
+        this.set('name', selectName)
       }
 
-      this.set('multiple', trigger.prop('multiple'));
+      this.set('multiple', trigger.prop('multiple'))
 
       // 替换之前把 select 保存起来
-      this.set('selectSource', trigger);
+      this.set('selectSource', trigger)
 
       // 替换 trigger
-      var newTrigger = $(this.get('triggerTpl')).addClass(getClassName(this.get('classPrefix'), 'trigger'));
-      this.set('trigger', newTrigger);
+      var newTrigger = $(this.get('triggerTpl')).addClass(getClassName(this.get('classPrefix'), 'trigger'))
+      this.set('trigger', newTrigger)
 
-      this._initFromSelect = true;
+      this._initFromSelect = true
 
       // 隐藏原生控件
       // 不用 hide() 的原因是需要和 arale/validator 的 skipHidden 来配合
@@ -280,18 +280,18 @@ var Select = Overlay.extend({
         position: 'absolute',
         left: '-99999px',
         zIndex: -100
-      });
+      })
 
       // trigger 如果为 select 则根据 select 的结构生成
-      this.set('model', convertSelect(trigger[0], this.get('classPrefix'), this.get('multiple')));
+      this.set('model', convertSelect(trigger[0], this.get('classPrefix'), this.get('multiple')))
 
-      trigger = newTrigger;
+      trigger = newTrigger
     } else {
       // 如果 name 存在则创建隐藏域
-      selectName = this.get('name');
+      selectName = this.get('name')
 
       if (selectName) {
-        var input = $('input[name="' + selectName + '"]').eq(0);
+        var input = $('input[name="' + selectName + '"]').eq(0)
 
         if (!input[0]) {
           input = $(
@@ -302,218 +302,219 @@ var Select = Overlay.extend({
             position: 'absolute',
             left: '-99999px',
             zIndex: -100
-          }).insertAfter(trigger);
+          }).insertAfter(trigger)
         }
 
-        this.set('selectSource', input);
+        this.set('selectSource', input)
       }
 
       // trigger 如果为其他 DOM，则由用户提供 model
-      this.set('model', completeModel(this.get('model'), this.get('classPrefix'), this.get('multiple')));
+      this.set('model', completeModel(this.get('model'), this.get('classPrefix'), this.get('multiple')))
     }
 
-    trigger.addClass(getClassName(this.get('classPrefix'), 'trigger'));
+    trigger.addClass(getClassName(this.get('classPrefix'), 'trigger'))
 
     if (this.get('multiple')) {
-      trigger.addClass(getClassName(this.get('classPrefix'), 'trigger-multiple'));
+      trigger.addClass(getClassName(this.get('classPrefix'), 'trigger-multiple'))
     }
   },
 
   setup: function() {
-    this._bindEvents();
-    this._initOptions();
-    this._initWidthAndHeight();
-    this._tweakAlignDefaultValue();
+    this._bindEvents()
+    this._initOptions()
+    this._initWidthAndHeight()
+    this._tweakAlignDefaultValue()
     // 调用 overlay，点击 body 隐藏
-    this._blurHide(this.get('trigger'));
+    this._blurHide(this.get('trigger'))
 
     this.after('show', function() {
-      this._resetPosition();
-      this.get('trigger').addClass('ui-select-opened');
-    });
+      this._resetPosition()
+      this.get('trigger').addClass('ui-select-opened')
+    })
 
     this.after('hide', function() {
-      this.get('trigger').removeClass('ui-select-opened');
-    });
+      this.get('trigger').removeClass('ui-select-opened')
+    })
 
-    Select.superclass.setup.call(this);
+    Select.superclass.setup.call(this)
   },
 
   render: function() {
-    Select.superclass.render.call(this);
-    this._setTriggerWidth();
-    return this;
+    Select.superclass.render.call(this)
+    this._setTriggerWidth()
+    return this
   },
 
   destroy: function() {
     if (this._initFromSelect) {
-      this.get('trigger').remove();
+      this.get('trigger').remove()
     }
-    this.get('selectSource') && this.get('selectSource').remove();
-    this.element.remove();
-    Select.superclass.destroy.call(this);
+    this.get('selectSource') && this.get('selectSource').remove()
+    this.element.remove()
+    Select.superclass.destroy.call(this)
   },
 
   // 方法接口
   // --------
 
   select: function(option) {
-    var newSelectIndex = getOptionIndex(option, this.options);
+    var newSelectIndex = getOptionIndex(option, this.options)
 
     if (this.get('multiple')) {
       if (newSelectIndex === -1) {
-        return;
+        return
       }
 
-      var selectedIndexes = this.get('selectedIndexes') || [];
+      var selectedIndexes = this.get('selectedIndexes') || []
 
       // 取消选中
       if (selectedIndexes.indexOf(newSelectIndex) !== -1) {
         selectedIndexes = selectedIndexes.filter(function(index) {
-          return index !== newSelectIndex;
-        });
-        newSelectIndex = -1;
+          return index !== newSelectIndex
+        })
+        newSelectIndex = -1
       } else {
-        selectedIndexes = selectedIndexes.concat(newSelectIndex);
-        selectedIndexes.sort();
+        selectedIndexes = selectedIndexes.concat(newSelectIndex)
+        selectedIndexes.sort()
       }
 
       // this.set('selectedIndex', newSelectIndex);
-      this.set('selectedIndexes', selectedIndexes);
+      this.set('selectedIndexes', selectedIndexes)
 
       // 同步 html 到 model
-      var model = this.get('model');
+      var model = this.get('model')
 
       model.select.forEach(function(select, index) {
-        select.selected = selectedIndexes.indexOf(index) !== -1;
-      });
+        select.selected = selectedIndexes.indexOf(index) !== -1
+      })
 
-      this.set('model', model);
+      this.set('model', model)
 
       // 如果不是原来选中的则触发 change 事件
-      this.trigger('change');
+      this.trigger('change')
 
     } else {
 
-      var oldSelectIndex = this.get('selectedIndex');
+      var oldSelectIndex = this.get('selectedIndex')
 
-      this.set('selectedIndex', newSelectIndex);
+      this.set('selectedIndex', newSelectIndex)
 
       // 同步 html 到 model
-      var model = this.get('model');
+      var model = this.get('model')
 
       if (oldSelectIndex >= 0) {
-        model.select[oldSelectIndex].selected = false;
+        model.select[oldSelectIndex].selected = false
       }
 
       if (newSelectIndex >= 0) {
-        model.select[newSelectIndex].selected = true;
+        model.select[newSelectIndex].selected = true
       }
 
-      this.set('model', model);
+      this.set('model', model)
 
       // 如果不是原来选中的则触发 change 事件
       if (oldSelectIndex !== newSelectIndex) {
         this.trigger('change',
             this.options.eq(newSelectIndex),
             this.options.eq(oldSelectIndex)
-          );
+          )
       }
 
-      this.hide();
+      this.hide()
     }
 
-    return this;
+    return this
   },
 
   // _multiSelect()
 
   syncModel: function(model) {
-    var multiple = this.get('multiple');
+    var multiple = this.get('multiple')
 
-    this.set('model', completeModel(model, this.get('classPrefix'), multiple));
+    this.set('model', completeModel(model, this.get('classPrefix'), multiple))
 
-    this.$('[data-role="content"]').html(partial(this.get('model'), {
-      helpers: this.templateHelpers
-    }));
+    this.renderPartialTemplate('options', this.get('model'))
+    // this.$('[data-role="content"]').html(partial(this.get('model'), {
+    //   helpers: this.templateHelpers
+    // }))
 
     // 同步原来的 select
-    syncSelect(this.get('selectSource'), model);
+    syncSelect(this.get('selectSource'), model)
 
     // 渲染后重置 select 的属性
-    this.options = this.$('[data-role="content"]').children();
-    this.set('length', this.options.length);
-    this.set('value', '');
+    this.options = this.$('[data-role="content"]').children()
+    this.set('length', this.options.length)
+    this.set('value', '')
 
-    var selectIndex = getOptionIndex('[data-selected="true"]', this.options);
+    var selectIndex = getOptionIndex('[data-selected="true"]', this.options)
 
     if (multiple) {
       if (!Array.isArray(selectIndex)) {
-        selectIndex = [selectIndex];
+        selectIndex = [selectIndex]
       }
 
-      this.set('selectedIndexes', selectIndex);
+      this.set('selectedIndexes', selectIndex)
     } else {
-      this.set('selectedIndex', -1);
-      this.set('selectedIndex', selectIndex);
+      this.set('selectedIndex', -1)
+      this.set('selectedIndex', selectIndex)
 
       // 重新设置 trigger 宽度
-      this._setTriggerWidth();
+      this._setTriggerWidth()
     }
 
-    return this;
+    return this
   },
 
   getOption: function(option) {
-    var index = getOptionIndex(option, this.options);
+    var index = getOptionIndex(option, this.options)
 
-    return this.options.eq(index);
+    return this.options.eq(index)
   },
 
   addOption: function(option) {
-    var model = this.get('model').select;
+    var model = this.get('model').select
 
-    model.push(option);
-    this.syncModel(model);
+    model.push(option)
+    this.syncModel(model)
 
-    return this;
+    return this
   },
 
   removeOption: function(option) {
     var removedIndex = getOptionIndex(option, this.options),
       oldIndex = this.get('selectedIndex'),
-      removedOption = this.options.eq(removedIndex);
+      removedOption = this.options.eq(removedIndex)
 
     // 删除 option，更新属性
-    removedOption.remove();
-    this.options = this.$('[data-role="content"]').children();
-    this.set('length', this.options.length);
+    removedOption.remove()
+    this.options = this.$('[data-role="content"]').children()
+    this.set('length', this.options.length)
 
     // 如果被删除的是当前选中的，则选中第一个
     if (removedIndex === oldIndex) {
-      this.set('selectedIndex', 0);
+      this.set('selectedIndex', 0)
 
       // 如果被删除的在选中的前面，则选中的索引向前移动一格
     } else if (removedIndex < oldIndex) {
-      this.set('selectedIndex', oldIndex - 1);
+      this.set('selectedIndex', oldIndex - 1)
     }
-    return this;
+    return this
   },
 
   enableOption: function(option) {
-    var index = getOptionIndex(option, this.options);
-    var model = this.get('model').select;
-    model[index].disabled = false;
-    this.syncModel(model);
-    return this;
+    var index = getOptionIndex(option, this.options)
+    var model = this.get('model').select
+    model[index].disabled = false
+    this.syncModel(model)
+    return this
   },
 
   disableOption: function(option) {
-    var index = getOptionIndex(option, this.options);
-    var model = this.get('model').select;
-    model[index].disabled = true;
-    this.syncModel(model);
-    return this;
+    var index = getOptionIndex(option, this.options)
+    var model = this.get('model').select
+    model[index].disabled = true
+    this.syncModel(model)
+    return this
   },
 
   // set 后的回调
@@ -521,193 +522,193 @@ var Select = Overlay.extend({
 
   _onRenderSelectedIndex: function(index) {
     if (index === -1 || this.get('multiple')) {
-      return;
+      return
     }
 
     var selected = this.options.eq(index),
       currentItem = this.currentItem,
-      value = selected.attr('data-value');
+      value = selected.attr('data-value')
 
     // 如果两个 DOM 相同则不再处理
     if (currentItem && selected[0] === currentItem[0]) {
-      return;
+      return
     }
 
     // 设置原来的表单项
-    var source = this.get('selectSource');
+    var source = this.get('selectSource')
 
     if (source) {
-      var sourceElement = source[0];
-      var oldValue = source.val();
+      var sourceElement = source[0]
+      var oldValue = source.val()
 
       if (sourceElement.tagName.toLowerCase() === 'select') {
-        sourceElement.selectedIndex = index;
+        sourceElement.selectedIndex = index
       } else {
-        sourceElement.value = value;
+        sourceElement.value = value
       }
 
       if (!value) {
-        value = null;
+        value = null
       }
 
       // 触发 change
-      (oldValue !== value) && source.trigger('change');
+      (oldValue !== value) && source.trigger('change')
     }
 
     // 处理之前选中的元素
     if (currentItem) {
       currentItem.attr('data-selected', 'false')
-        .removeClass(getClassName(this.get('classPrefix'), 'selected'));
+        .removeClass(getClassName(this.get('classPrefix'), 'selected'))
     }
 
     // 处理当前选中的元素
     selected.attr('data-selected', 'true')
-      .addClass(getClassName(this.get('classPrefix'), 'selected'));
-    this.set('value', value);
+      .addClass(getClassName(this.get('classPrefix'), 'selected'))
+    this.set('value', value)
 
     // 填入选中内容，位置先找 "data-role"="trigger-content"，再找 trigger
-    var trigger = this.get('trigger');
-    var triggerContent = trigger.find('[data-role="trigger-content"]');
+    var trigger = this.get('trigger')
+    var triggerContent = trigger.find('[data-role="trigger-content"]')
 
     if (triggerContent.length) {
-      triggerContent.html(selected.html());
+      triggerContent.html(selected.html())
     } else {
-      trigger.html(selected.html());
+      trigger.html(selected.html())
     }
 
-    this.currentItem = selected;
+    this.currentItem = selected
   },
 
   // for multiple
   _onRenderSelectedIndexes: function(indexes) {
-    var optionLength = this.options.length;
+    var optionLength = this.options.length
 
-    var values = [];
-    var texts = [];
-    var classSelected = getClassName(this.get('classPrefix'), 'selected');
+    var values = []
+    var texts = []
+    var classSelected = getClassName(this.get('classPrefix'), 'selected')
 
     this.options.each(function(index, option) {
-      option = $(option);
+      option = $(option)
       if (indexes.indexOf(index) !== -1) {
-        values.push(option.attr('data-value'));
-        texts.push(option.html());
-        option.attr('data-selected', 'true').addClass(classSelected);
+        values.push(option.attr('data-value'))
+        texts.push(option.html())
+        option.attr('data-selected', 'true').addClass(classSelected)
       } else {
-        option.attr('data-selected', 'false').removeClass(classSelected);
+        option.attr('data-selected', 'false').removeClass(classSelected)
       }
-    });
+    })
 
     // 设置原来的表单项
-    var source = this.get('selectSource');
+    var source = this.get('selectSource')
 
     if (source) {
-      var sourceElement = source[0];
-      var oldValues = source.val();
+      var sourceElement = source[0]
+      var oldValues = source.val()
 
-      var _values = values.length ? JSON.stringify(values) : null;
+      var _values = values.length ? JSON.stringify(values) : null
 
       if (sourceElement.tagName.toLowerCase() === 'select') {
-        var sourceOptions = sourceElement.options;
-        var i;
+        var sourceOptions = sourceElement.options
+        var i
 
         for (i = 0; i < optionLength; i++) {
-          sourceOptions[i].selected = indexes.indexOf(i) !== -1;
+          sourceOptions[i].selected = indexes.indexOf(i) !== -1
         }
       } else {
-        sourceElement.value = _values;
+        sourceElement.value = _values
       }
 
       // 触发 change
-      (oldValues !== _values) && source.trigger('change');
+      (oldValues !== _values) && source.trigger('change')
     }
 
-    this.set('value', values);
+    this.set('value', values)
 
     // 填入选中内容，位置先找 "data-role"="trigger-content"，再找 trigger
-    var trigger = this.get('trigger');
-    var triggerContent = trigger.find('[data-role="trigger-content"]');
+    var trigger = this.get('trigger')
+    var triggerContent = trigger.find('[data-role="trigger-content"]')
 
     if (triggerContent.length) {
-      triggerContent.html(items(texts));
+      triggerContent.html(items(texts))
     } else {
-      trigger.html(items(texts));
+      trigger.html(items(texts))
     }
 
-    this._setTriggerWidth();
-    this._resetPosition();
+    this._setTriggerWidth()
+    this._resetPosition()
   },
 
   _onRenderDisabled: function(val) {
-    var className = getClassName(this.get('classPrefix'), 'disabled');
-    var trigger = this.get('trigger');
-    trigger[(val ? 'addClass' : 'removeClass')](className);
+    var className = getClassName(this.get('classPrefix'), 'disabled')
+    var trigger = this.get('trigger')
+    trigger[(val ? 'addClass' : 'removeClass')](className)
 
     // trigger event
-    var selected = this.options.eq(this.get('selectedIndex'));
-    this.trigger('disabledChange', selected, val);
+    var selected = this.options.eq(this.get('selectedIndex'))
+    this.trigger('disabledChange', selected, val)
   },
 
   _onRenderData: function(data) {
     if (data.length) {
-      this.syncModel(data);
+      this.syncModel(data)
     }
   },
   // 私有方法
   // ------------
 
   _bindEvents: function() {
-    var trigger = this.get('trigger');
+    var trigger = this.get('trigger')
 
-    this.delegateEvents(trigger, 'mousedown', this._triggerHandle);
+    this.delegateEvents(trigger, 'mousedown', this._triggerHandle)
     this.delegateEvents(trigger, 'click', function(e) {
-      e.preventDefault();
-    });
+      e.preventDefault()
+    })
     this.delegateEvents(trigger, 'mouseenter', function() {
-      trigger.addClass(getClassName(this.get('classPrefix'), 'trigger-hover'));
-    });
+      trigger.addClass(getClassName(this.get('classPrefix'), 'trigger-hover'))
+    })
     this.delegateEvents(trigger, 'mouseleave', function() {
-      trigger.removeClass(getClassName(this.get('classPrefix'), 'trigger-hover'));
-    });
+      trigger.removeClass(getClassName(this.get('classPrefix'), 'trigger-hover'))
+    })
   },
 
   _initOptions: function() {
-    this.options = this.$('[data-role="content"]').children();
+    this.options = this.$('[data-role="content"]').children()
     // 初始化 select 的参数
     // 必须在插入文档流后操作
-    this.select('[data-selected="true"]');
-    this.set('length', this.options.length);
+    this.select('[data-selected="true"]')
+    this.set('length', this.options.length)
   },
 
   // trigger 的宽度和浮层保持一致
   _setTriggerWidth: function() {
-    var trigger = this.get('trigger');
-    var element = this.element;
+    var trigger = this.get('trigger')
+    var element = this.element
 
     if (this.get('multiple')) {
-      trigger.width('auto');
-      element.css('width', trigger.outerWidth());
+      trigger.width('auto')
+      element.css('width', trigger.outerWidth())
     } else {
       // reset
-      element.width('auto');
+      element.width('auto')
       // add scrollbar width: 6
-      var triggerWidth = element.outerWidth() + this.get('scrollbarWidth');
+      var triggerWidth = element.outerWidth() + this.get('scrollbarWidth')
       if(triggerWidth > this.get('maxWidth')){
-        trigger.css('width', this.get('maxWidth'));
+        trigger.css('width', this.get('maxWidth'))
         // 因为 trigger 的宽度可能受 CSS（如 max-width） 限制，
         // 最后将 element 的宽度设置为与 trigger 等宽
-        element.css('width', this.get('maxWidth'));
+        element.css('width', this.get('maxWidth'))
       } else {
-        trigger.css('width', triggerWidth);
+        trigger.css('width', triggerWidth)
         // 因为 trigger 的宽度可能受 CSS（如 max-width） 限制，
         // 最后将 element 的宽度设置为与 trigger 等宽
-        element.css('width', triggerWidth);
+        element.css('width', triggerWidth)
       }
     }
   },
 
   _resetPosition: function() {
-    var align = this.get('align');
-    var alignBase = align.baseElement;
+    var align = this.get('align')
+    var alignBase = align.baseElement
 
     // 默认是展示在 trigger 的下方，
     // 当 trigger 底部区域不足以显示内容时改为 trigger 上方
@@ -715,103 +716,103 @@ var Select = Overlay.extend({
       this.set('align', {
         baseXY: [0, '1px'],
         selfXY: [0, '100%']
-      });
+      })
     } else {
       this.set('align', {
         baseXY: [0, '100%-1px'],
         selfXY: [0, 0]
-      });
+      })
     }
   },
 
   // borrow from dropdown
   // 调整 align 属性的默认值, 在 trigger 下方
   _tweakAlignDefaultValue: function() {
-    var align = this.get('align');
+    var align = this.get('align')
 
     // 默认基准定位元素为 trigger
     if (align.baseElement._id === 'VIEWPORT') {
-      align.baseElement = this.get('trigger');
+      align.baseElement = this.get('trigger')
     }
 
-    this.set('align', align);
+    this.set('align', align)
   },
 
   _triggerHandle: function(e) {
-    e.preventDefault();
+    e.preventDefault()
 
     if (!this.get('disabled')) {
-      this.get('visible') ? this.hide() : this.show();
+      this.get('visible') ? this.hide() : this.show()
     }
   },
 
   _initWidthAndHeight: function() {
     this.after('show', function() {
-      var maxHeight = this.get('maxHeight');
+      var maxHeight = this.get('maxHeight')
 
       if (maxHeight) {
-        var ul = this.$('[data-role="content"]');
-        var height = getLiHeight(ul);
+        var ul = this.$('[data-role="content"]')
+        var height = getLiHeight(ul)
 
-        this.set('height', height > maxHeight ? maxHeight : '');
-        ul.scrollTop(0);
+        this.set('height', height > maxHeight ? maxHeight : '')
+        ul.scrollTop(0)
       }
-    });
+    })
   }
 
-});
+})
 
 Select.pluginEntry = {
   name: 'Select',
   starter: function() {
     var plugin = this,
-      host = plugin.host;
+      host = plugin.host
 
-    var _widgets = plugin.exports = {};
+    var _widgets = plugin.exports = {}
 
     function addWidget(name, instance) {
-      _widgets[name] = instance;
+      _widgets[name] = instance
 
-      plugin.trigger('export', instance, name);
+      plugin.trigger('export', instance, name)
     }
 
     plugin.execute = function() {
       host.$('select:not([data-rendered])')
         .filter(':not([data-rendered])')
         .each(function(i, field) {
-          field.setAttribute('data-rendered', 'true');
+          field.setAttribute('data-rendered', 'true')
           addWidget(field.name, new Select($.extend(true, {
             trigger: field,
             disabled: !!field.disabled || !!field.getAttribute('readonly')
-          }, plugin.getOptions('config'))).render());
-        });
-    };
+          }, plugin.getOptions('config'))).render())
+        })
+    }
 
-    host.after('render', plugin.execute);
+    host.after('render', plugin.execute)
 
     typeof host.addField === 'function' &&
-      host.after('addField', plugin.execute);
+      host.after('addField', plugin.execute)
 
     typeof host.removeField === 'function' &&
       host.before('removeField', function(name) {
         if (name in _widgets) {
-          _widgets[name].destroy();
+          _widgets[name].destroy()
         }
-      });
+      })
 
     host.before('destroy', function() {
       Object.keys(_widgets).forEach(function(key) {
-        _widgets[key].destroy();
-      });
-    });
+        _widgets[key].destroy()
+      })
+    })
 
     plugin.getWidget = function(name) {
-      return _widgets[name];
-    };
+      return _widgets[name]
+    }
 
     // 通知就绪
-    this.ready();
+    this.ready()
   }
-};
+}
 
-module.exports = Select;
+module.exports = Select
